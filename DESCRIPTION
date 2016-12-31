@@ -1,0 +1,18 @@
+Package: SuperFarmerKapibary
+Title: Super Farmer Kapibary
+Version: 1.0
+Authors@R: c(
+    person("Tomasz", "Bielak", email = "tomasz.bielak@student.uw.edu.pl", role = c("aut")),
+    person("Michał", "Kotlewski", email = "michal.kotlewski@student.uw.edu.pl", role = c("cre")))
+Description: 'Gra w gre SuperFarmer'
+Depends:
+    R (>= 3.2.2)
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+Suggests:
+    testthat, knitr, rmarkdown
+Imports:
+    knitr
+RoxygenNote: 5.0.1
+VignetteBuilder: knitr

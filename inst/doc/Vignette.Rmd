@@ -1,0 +1,221 @@
+---
+title: "Pakiet SuperFarmerKapibary"
+author: "Tomasz Bielak, Michał Kotlewski"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{SuperFarmerKapibary}
+  %\usepackage[utf8]{inputenc}
+---
+
+## O pakiecie
+
+Pakiet `SuperFarmerKapibary` symuluje jednoosobową rozgrywkę w grę SuperFarmera według powszechnie funkcjonujących zasad (bez modyfikacji ani parametryzacji reguł gry). Pozwala na przeprowadzenie pojedynczej gry z zastosowaniem przygotowanej strategii oraz zbadania jej efektywności poprzez analizę wyników symulacji składającej się z dowolnie określonej liczby powtórzeń gry. Pakiet pozwala również na zwizualizowanie wyników gry na histogramie oraz analizę prostych statystyk opisujących rozkład wyników gry. 
+
+## Strategie
+
+W pakiecie zdefiniowano dwie strategie. Pierwsza strategia polegała na możliwie szybkiej zamianie niżej premiowanych zwierząt na wyżej premiowane zwierzęta (premia liczona w ewiwalencie liczby królików). Strategia druga powstała jako korekta strategii pierwszej tak, aby nie zapominać o wymianach wyżej premiowanych zwierząt na niższe, gdy posiadamy zbyt dużo niepotrzebnych, wartościowych zwierząt a zbyt mało zwierząt o niższej wartości.
+
+#### Parametry:
+
+* stanGracza - nazwany wektor długości 7 opisujący stan stada gracza
+
+#### Wynik:
+
+* stanGracza - nowy, zaktualizowany o reguły ze strategii, nazwany wektor długości 7 opisujący stan stada gracza
+
+## strategia_Pierwsza
+
+### Przykłady:  
+
+```{r}
+library(SuperFarmerKapibary)
+stanGry <- c(5,5,5,0,0,0,0)
+print(stanGry)
+stanGry <- strategia_Pierwsza(stanGry)
+print(stanGry)
+stanGry <- strategia_Pierwsza(stanGry)
+print(stanGry)
+stanGry <- strategia_Pierwsza(stanGry)
+print(stanGry)
+
+```
+
+## strategia_Druga
+
+#### Przykłady:  
+
+```{r}
+library(SuperFarmerKapibary)
+stanGry <- c(5,5,5,0,0,0,0)
+print(stanGry)
+stanGry <- strategia_Druga(stanGry)
+print(stanGry)
+stanGry <- strategia_Druga(stanGry)
+print(stanGry)
+stanGry <- strategia_Druga(stanGry)
+print(stanGry)
+```
+
+## Główne funkcje użyte w pakiecie
+
+## gra
+
+Niniejsza funkcja ma na celu przeprowadzenie pełnej gry SuperFarmer dla jednego gracza, który posługuje się strategią zdefiniowaną jako argument funkcji.
+
+#### Parametry:
+
+* strategia - Funkcja opisująca zbiór reguł, które reagują na aktualny stan stada gracza i zwraca nowy stan stada po wykonaniu wszystkich wymian zgodnie z zasadami gdy
+
+#### Wynik:
+
+Funkcja zwraca liczbę tur, jaka była niezbędna do zakończenia gdy przy zastosowanej strategii
+
+#### Przykłady:  
+
+```{r}
+SuperFarmerKapibary::gra(strategia=SuperFarmerKapibary::strategia_Pierwsza)
+```  
+
+```{r}
+SuperFarmerKapibary::gra(strategia=SuperFarmerKapibary::strategia_Druga)
+``` 
+
+## badaj_gre
+
+
+#### Parametry:
+
+* strategia - Strategia, którą będziemy testować.
+* powt - Liczba badanych gier.
+* progressBar - Gdy TRUE wyświetlany jest tekstowy pasek postępu, gdy FALSE paska nie ma. Domyślnie FALSE.
+* histogram - Gdy TRUE wyświetlany jest histogram wyników, gdy FALSE histogramu nie ma. Domyślnie FALSE.
+* statystyki - Gdy TRUE wyświetlane są statystyki rozkłądu wyników, gdy FALSE to nie. Domyślnie TRUE.
+* zwrocRozklad - Gdy TRUE funkcja zwraca nazwany wektor statystyk opisowych. Domyślnie FALSE.
+
+#### Przykłady:  
+
+Wywołanie z domyślnymi wartościami parametrów:
+
+```{r}
+SuperFarmerKapibary::badaj_gre(strategia = SuperFarmerKapibary::strategia_Pierwsza,
+                               powt      = 100)
+```  
+
+Wywołanie z parametrem histogram=TRUE:
+
+```{r}
+SuperFarmerKapibary::badaj_gre(strategia    = SuperFarmerKapibary::strategia_Druga,
+                               powt         = 100,
+                               progressBar  = FALSE,
+                               statystyki   = FALSE,
+                               histogram    = TRUE)
+``` 
+
+Wywołanie z parametrem zwrocRozklad=TRUE:
+
+```{r}
+rozklad <- SuperFarmerKapibary::badaj_gre(strategia    = SuperFarmerKapibary::strategia_Druga,
+                                          powt         = 100,
+                                          progressBar  = FALSE,
+                                          statystyki   = FALSE,
+                                          zwrocRozklad = TRUE)
+``` 
+
+# Testy innych pakietów
+
+## Testowanie funkcji badaj_gre na strategiach z czterech innych, wybranych pakietów
+
+### SuperFarmer.SuperDziewczyn
+
+```{r}
+SuperFarmerKapibary::badaj_gre(SuperFarmer.SuperDziewczyn::strategia_owce,
+                               powt=100, 
+                               progressBar=FALSE, 
+                               histogram=TRUE)
+```
+
+```{r}
+SuperFarmerKapibary::badaj_gre(SuperFarmer.SuperDziewczyn::strategia_wymian_0_0_0_0,
+                               powt=100, 
+                               progressBar=FALSE, 
+                               histogram=TRUE)
+```
+
+```{r}
+SuperFarmerKapibary::badaj_gre(SuperFarmer.SuperDziewczyn::strategia_wymian_1_1_1_1,
+                               powt=100, 
+                               progressBar=FALSE, 
+                               histogram=TRUE)
+```
+
+### SuperFarmerADiPR
+
+```{r}
+SuperFarmerKapibary::badaj_gre(SuperFarmerADiPR::strategia_postMDiPR,
+                               powt=100, 
+                               progressBar=FALSE, 
+                               histogram=TRUE)
+```
+
+```{r}
+SuperFarmerKapibary::badaj_gre(SuperFarmerADiPR::strategia_ADA,
+                               powt=100, 
+                               progressBar=FALSE, 
+                               histogram=TRUE)
+```
+
+### SuperFarmerMoc
+
+```{r}
+SuperFarmerKapibary::badaj_gre(SuperFarmerMoc::strategia_postMDiPR,
+                               powt=100, 
+                               progressBar=FALSE, 
+                               histogram=TRUE)
+```
+
+```{r}
+SuperFarmerKapibary::badaj_gre(SuperFarmerMoc::strategia_Jana,
+                               powt=100, 
+                               progressBar=FALSE, 
+                               histogram=TRUE)
+```
+
+# Testowanie strategii pierwszej na funkcji gra z czterech innych, wybranych pakietów
+### SuperFarmerMoc
+```{r}
+SuperFarmerMoc:::gra(SuperFarmerKapibary::strategia_Pierwsza)
+```
+### SuperFarmerADiPR
+```{r}
+SuperFarmerADiPR::gra(SuperFarmerKapibary::strategia_Pierwsza)
+```
+### SuperFarmer.SuperDziewczyn
+```{r}
+SuperFarmer.SuperDziewczyn::gra(SuperFarmerKapibary::strategia_Pierwsza)
+```
+### SuperFarmer.SuperPakiet
+```{r}
+SuperFarmer.SuperPakiet::gra(SuperFarmerKapibary::strategia_Pierwsza)
+```
+
+# Testowanie strategii drugiej na funkcji gra z innych pakietów
+### SuperFarmerMoc
+```{r}
+SuperFarmerMoc:::gra(SuperFarmerKapibary::strategia_Druga)
+```
+### SuperFarmerADiPR
+```{r}
+SuperFarmerADiPR::gra(SuperFarmerKapibary::strategia_Druga)
+```
+### SuperFarmer.SuperDziewczyn
+```{r}
+SuperFarmer.SuperDziewczyn::gra(SuperFarmerKapibary::strategia_Druga)
+```
+### SuperFarmer.SuperPakiet
+```{r}
+SuperFarmer.SuperPakiet::gra(SuperFarmerKapibary::strategia_Druga)
+```
+
+
