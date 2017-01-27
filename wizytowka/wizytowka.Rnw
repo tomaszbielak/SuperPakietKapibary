@@ -1,0 +1,332 @@
+<<label=deklaracje, echo=False, results=tex, include=false>>=
+
+  if (!require("ggplot2")) install.packages("ggplot2"); library(ggplot2)
+  if (!require("devtools")) install.packages("devtools"); library(devtools)
+  if (!require("dplyr")) install.packages("dplyr"); library(dplyr)
+  if (!require("SuperFarmerKapibary")) install_github("tomaszbielak/SuperFarmerKapibary"); library(SuperFarmerKapibary)
+  if (!require("SuperFarmer.SuperDziewczyn")) install_url("https://goo.gl/IDxWKN"); library(SuperFarmer.SuperDziewczyn)
+
+  powtorzenia <- 10000 #Liczba powtórzeń gry na potrzeby tworzenia wizytówek
+
+  #nazwaStrategii    <- "Strategia Owce (SuperFarmerSuperDziewczyn)" #Nazwa strategii, którą porównamy z bazową
+  #strategia         <- SuperFarmer.SuperDziewczyn::strategia_owce   #Funkcja strategii, którą porównamy z bazową
+
+  nazwaStrategii    <- "Strategia Pierwsza (SuperFarmerKapibary)"  #Nazwa strategii, którą porównamy z bazową
+  strategia         <- SuperFarmerKapibary::strategia_Pierwsza     #Funkcja strategii, którą porównamy z bazową
+
+  nazwaStrategiiBazowej  <- "Strategia Druga (SuperFarmerKapibary)"  #Nazwa strategii, którą posłuży jako bazowa
+  strategiaBazowa        <- SuperFarmerKapibary::strategia_Druga     #Funkcja strategii, którą posłuży jako bazowa
+
+  gra <- SuperFarmerKapibary::gra #Silnik gry
+
+  czasy <- function(strat, gra, powt = 10000){
+    return(replicate(powt, gra(strat)))
+  }
+
+  wektor       <- czasy(strategia, gra, powtorzenia)
+  wektorBazowy <- czasy(strategiaBazowa, gra, powtorzenia)
+
+  kolor   <- c("#1D77A8", "#999999")
+
+@
+
+\documentclass{article}
+
+\usepackage[a4paper,margin=0.5in,bottom=0.1in,top=0.2in,landscape]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{multicol}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{xcolor}
+
+\begin{document}
+\thispagestyle{empty}
+\SweaveOpts{concordance=TRUE}
+\begin{center}
+<<label=naglowek, echo=False, results=tex, include=false>>=
+
+text <- paste("{\\large Wizytówka strategii {\\color[HTML]{1D77A8} \\textbf{",
+              nazwaStrategii,
+              "}} względem strategii {\\color[HTML]{999999} \\textbf{",
+              nazwaStrategiiBazowej,
+              "}}}")
+cat(text)
+
+@
+\end{center}
+\vspace*{3mm}
+\begin{multicols}{3}
+
+\begin{center}
+{\large Statystyki opisowe:}
+\end{center}
+<<label=statystyki, echo=False, results=tex, include=false>>=
+
+# Minimum
+min1  <- min(wektor)
+min2  <- min(wektorBazowy)
+text3 <- paste("Minimum liczby ruchów: \\hfill {\\textbf {\\color[HTML]{1D77A8} { \\LARGE ",
+              round(min1,1),
+              "}}} vs {\\textbf {\\color[HTML]{999999} { \\Large ",
+              round(min2,1),
+              "}}}\\\\\\\\")
+cat(text3)
+
+# Kwartyl 1
+q11   <- quantile(wektor, probs=c(1/4), type=1)
+q12   <- quantile(wektorBazowy, probs=c(1/4), type=1)
+text7 <- paste("Kwartyl Q1 liczby ruchów: \\hfill {\\textbf {\\color[HTML]{1D77A8} { \\LARGE ",
+               round(q11,1),
+               "}}} vs {\\textbf {\\color[HTML]{999999} { \\Large ",
+               round(q12,1),
+               "}}}\\\\\\\\")
+cat(text7)
+
+# Średnia
+m1    <- mean(wektor)
+m2    <- mean(wektorBazowy)
+text1 <- paste("Średnia liczba ruchów: \\hfill {\\textbf {\\color[HTML]{1D77A8} { \\LARGE ",
+               round(m1,1),
+               "}}} vs {\\textbf {\\color[HTML]{999999} { \\Large ",
+               round(m2,1),
+               "}}}\\\\\\\\")
+cat(text1)
+
+# Mediana
+me1   <- median(wektor)
+me2   <- median(wektorBazowy)
+text2 <- paste("Mediana liczby ruchów: \\hfill {\\textbf {\\color[HTML]{1D77A8} { \\LARGE ",
+               round(me1,1),
+               "}}} vs {\\textbf {\\color[HTML]{999999} { \\Large ",
+               round(me2,1),
+               "}}}\\\\\\\\")
+cat(text2)
+
+# Kwartyl 3
+q31   <- quantile(wektor, probs=c(3/4), type=1)
+q32   <- quantile(wektorBazowy, probs=c(3/4), type=1)
+text8 <- paste("Kwartyl Q3 liczby ruchów: \\hfill {\\textbf {\\color[HTML]{1D77A8} { \\LARGE ",
+               round(q31,1),
+               "}}} vs {\\textbf {\\color[HTML]{999999} { \\Large ",
+               round(q32,1),
+               "}}}\\\\\\\\")
+cat(text8)
+
+# Max
+max1  <- max(wektor)
+max2  <- max(wektorBazowy)
+text4 <- paste("Maksimum liczby ruchów: \\hfill {\\textbf {\\color[HTML]{1D77A8} { \\LARGE ",
+               round(max1,1),
+               "}}} vs {\\textbf {\\color[HTML]{999999} { \\Large ",
+               round(max2,1),
+               "}}}\\\\\\\\")
+cat(text4)
+
+# Wariancja
+var1  <- var(wektor)
+var2  <- var(wektorBazowy)
+text6 <- paste("Wariancja liczby ruchów: \\hfill {\\textbf {\\color[HTML]{1D77A8} { \\LARGE ",
+               round(var1,0),
+               "}}} vs {\\textbf {\\color[HTML]{999999} { \\Large ",
+               round(var2,0),
+               "}}}\\\\\\\\")
+cat(text6)
+
+# Odchylenie standardowe
+std1  <- sd(wektor)
+std2  <- sd(wektorBazowy)
+text5 <- paste("Odchylenie std. liczby ruchów: \\hfill {\\textbf {\\color[HTML]{1D77A8} { \\LARGE ",
+               round(std1,1),
+               "}}} vs {\\textbf {\\color[HTML]{999999} { \\Large ",
+               round(std2,1),
+               "}}}\\\\\\\\")
+cat(text5)
+
+@
+
+<<label=wykresEmpirycznejDystrynuanty, fig=TRUE, echo=FALSE, include=FALSE>>=
+
+wykresEmpirycznejDystrynuanty <-
+  ggplot2::ggplot(as.data.frame(wektorBazowy), ggplot2::aes(wektorBazowy)) +
+  ggplot2::stat_ecdf(colour = kolor[2], alpha = 1, size = 2) +
+  ggplot2::theme(axis.text = ggplot2::element_text(size = 14),
+                 axis.title = ggplot2::element_text(size = 18, colour = "#7e7e7e")) +
+  ggplot2::stat_ecdf( ggplot2::aes(wektor), colour = kolor[1], alpha = 1, size=2) +
+  ggplot2::ylim(0, 1) +
+  ggplot2::xlab("Liczba ruchów w partii partii") +
+  ggplot2::ylab(NULL) +
+  ggplot2::xlim(0, 300) +
+  ggplot2::theme(panel.background = ggplot2::element_rect(fill = "#dddddd", colour = "#cccccc")) +
+  ggplot2::theme(axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 20)))
+
+wykresEmpirycznejDystrynuanty
+
+@
+\begin{center}
+{\large Empiryczna dystrybuanta}\\
+
+\includegraphics[width=0.3\textwidth]{wizytowka-wykresEmpirycznejDystrynuanty}
+\end{center}
+<<label=wykresRozkladuPrawdopodobienstwa, fig=TRUE, echo=FALSE, include=FALSE>>=
+
+wykresRozkladuPrawdopodobienstwa <-
+  ggplot2::ggplot(as.data.frame(wektorBazowy), ggplot2::aes(wektorBazowy)) +
+  ggplot2::geom_density(colour=kolor[2], fill = kolor[2], alpha = 0.3, bw = 4) +
+  ggplot2::theme(axis.text=ggplot2::element_text(size=14),
+                axis.title=ggplot2::element_text(size=18,colour = "#7e7e7e")) +
+  ggplot2::geom_density( ggplot2::aes(wektor), colour=kolor[1], fill = kolor[1], alpha = 0.3, bw = 4) +
+  ggplot2::ylim(0, 0.03) + ggplot2::xlab("Liczba ruchów w partii (+średnie)") +
+  ggplot2::ylab(NULL) +
+  ggplot2::geom_vline(xintercept = mean(wektorBazowy), col = kolor[2], size = 1) +
+  ggplot2::geom_vline(xintercept = mean(wektor), col = kolor[1], size = 1) +
+  ggplot2::xlim(0, 300) +
+  ggplot2::theme(panel.background = element_rect(fill = "#dddddd", colour = "#cccccc")) +
+  scale_fill_brewer(palette="Set3") +
+  theme(axis.title.x = element_text(margin = margin(t = 20)))
+
+wykresRozkladuPrawdopodobienstwa
+
+@
+
+\columnbreak
+\begin{center}
+{\large Rozkład prawdopodobieństwa}\\
+
+\includegraphics[width=0.3\textwidth]{wizytowka-wykresRozkladuPrawdopodobienstwa}
+
+<<label=wykresPercentyli, fig=TRUE, echo=FALSE, include=FALSE>>=
+
+decyle <- data.frame(rundy=c(quantile(wektorBazowy,
+                                      probs=c(0.0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.90, 0.95, 0.99, 1)),
+                             quantile(wektor,
+                                      probs=c(0.0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.90, 0.95, 0.99, 1))))
+
+etykiety        <- rep(c("MIN", "P1", "P5", "P10", "P25", "P50", "P75", "P90", "P95", "P99", "MAX"),2)
+decyle$etykieta <- etykiety
+
+decyle$etykietaUporzadkowana <- factor(decyle$etykieta,c("MIN", "P1", "P5", "P10", "P25",
+                                                         "P50", "P75", "P90", "P95", "P99", "MAX"))
+
+decyle$strategia <- c(rep("Strategia bazowa", 11), rep("Strategia", 11))
+
+wykresPercentyli <-
+  ggplot2::ggplot(decyle, ggplot2::aes(x = etykietaUporzadkowana, y = rundy, fill = strategia)) +
+  ggplot2::geom_col(ggplot2::aes(fill = strategia), position = "dodge", width = 0.75 ) +
+  geom_label(
+    aes(label = round(rundy,0), y = 0.5*rundy),
+    position = position_dodge(width = 1),
+    vjust = "center",
+    hjust = "center",
+    alpha = 0.7,
+    lineheight = 0,
+    colour = "white",
+    fontface = "bold") +
+  ggplot2::theme(axis.text=ggplot2::element_text(size=14),
+                axis.title=ggplot2::element_text(size=18,colour = "#7e7e7e")) +
+  ggplot2::theme(axis.title.x = element_text(margin = margin(t = 20))) +
+  ggplot2::theme(legend.position = "none") +
+  ggplot2::theme(panel.background = element_rect(fill = "#dddddd", colour = "#cccccc")) +
+  ggplot2::ylab("Liczba ruchów w partii") +
+  ggplot2::xlab(NULL) +
+  ggplot2::scale_fill_manual(values = kolor) +
+  coord_flip()
+
+wykresPercentyli
+@
+\end{center}
+\begin{center}
+{\large Wykres percentyli}\\
+
+\includegraphics[width=0.3\textwidth]{wizytowka-wykresPercentyli}
+
+<<label=wykresPudelkowy, fig=TRUE, echo=FALSE, include=FALSE>>=
+
+polaczone           <- data.frame(rundy = c(wektorBazowy, wektor))
+polaczone$strategia <- c(rep("Strategia bazowa", length(wektorBazowy)), rep("Strategia", length(wektor)))
+
+wykresPudelkowy <- ggplot(polaczone, aes(x = strategia, y = rundy, fill = strategia)) +
+                   geom_boxplot() +
+                   ggplot2::theme(axis.text=ggplot2::element_text(size = 14),
+                                  axis.title=ggplot2::element_text(size = 18,colour = "#7e7e7e")) +
+                   ggplot2::theme(legend.position = "none") +
+                   ggplot2::theme(axis.title.x = element_text(margin = margin(t = 20))) +
+                   guides(fill = FALSE) +
+                   ggplot2::scale_fill_manual(values = kolor) +
+                   ggplot2::stat_summary(fun.y = mean, geom = "point", shape = 5, size = 4) +
+                   ggplot2::theme(panel.background = element_rect(fill = "#dddddd", colour = "#cccccc")) +
+                   ggplot2::xlab("") +
+                   ggplot2::ylim(0, 300) +
+                   ggplot2::ylab("Liczba ruchów w partii") +
+                   coord_flip() +
+                   ggplot2::theme(axis.title.y = element_blank(),
+                     axis.text.y = element_blank(),
+                     axis.ticks.y = element_blank())
+
+wykresPudelkowy
+@
+\end{center}
+\columnbreak
+\begin{center}
+{\large Wykres pudełkowy}\\
+
+\includegraphics[width=0.3\textwidth]{wizytowka-wykresPudelkowy}
+\end{center}
+\begin{center}
+{\large Obserwacje odstające}\\
+
+<<label=wykresUsunieteWynikiEkstremalne, fig=TRUE, echo=FALSE, include=FALSE>>=
+
+usunWynikiEkstremalne <- function(x, k,na.rm = TRUE, ...) {
+  qnt <- quantile(x, probs=c(k,1-k), na.rm = na.rm, ...)
+  y <- x
+  y[x < qnt[1]] <- NA
+  y[x > qnt[2]] <- NA
+  y
+}
+
+for(i in seq_along(1:10)){
+  assign(paste('wektor', i, sep=''), usunWynikiEkstremalne(wektor,0.01*i))
+}
+
+for(i in seq_along(1:10)){
+  assign(paste('wektorBazowy', i, sep=''), usunWynikiEkstremalne(wektorBazowy,0.01*i))
+}
+
+l       <- length(wektor)
+scen    <- c(rep("Scenariusz",10*l),rep("Scenariusz bazowy",10*l))
+outlier <- rep(c(rep("P1",l), rep("P2",l), rep("P3",l), rep("P4",l),
+                rep("P5",l), rep("P6",l), rep("P7",l), rep("P8",l),
+                rep("P9",l), rep("P10",l)), 2)
+
+df <- data.frame(rundy=c(wektor1,wektor2,wektor3,wektor4,wektor5,
+                         wektor6,wektor7,wektor8,wektor9,wektor10,
+                         wektorBazowy1,wektorBazowy2,wektorBazowy3,wektorBazowy4,wektorBazowy5,
+                         wektorBazowy6,wektorBazowy7,wektorBazowy8,wektorBazowy9,wektorBazowy10),
+                 scenariusz=scen, poziom=outlier)
+
+df$poziom <- factor(df$poziom,c("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"))
+
+wykresUsunieteWynikiEkstremalne <-
+  ggplot(data = df, aes(x = poziom, y = rundy)) +
+  geom_boxplot(aes(fill = scen)) +
+  scale_fill_manual(values = kolor) +
+  ggplot2::theme(axis.text = ggplot2::element_text(size = 14),
+                axis.title = ggplot2::element_text(size = 18, colour = "#7e7e7e")) +
+  ggplot2::theme(panel.background = ggplot2::element_rect(fill = "#dddddd", colour = "#cccccc")) +
+  ggplot2::theme(legend.position = "none") +
+  ggplot2::theme(axis.title.x = element_text(margin = margin(t = 20))) +
+  ggplot2::ylab("Liczba ruchów (przy odrzuceniu PX% skrajnych rund") +
+  ggplot2::xlab(NULL) +
+  ggplot2::ylim(0, 300) +
+  coord_flip()
+
+wykresUsunieteWynikiEkstremalne
+
+@
+\includegraphics[width=0.3\textwidth]{wizytowka-wykresUsunieteWynikiEkstremalne}
+\end{center}
+\end{multicols}
+\begin{center}
+Pracę wykonał Tomasz Bielak (332067)
+\end{center}
+\end{document}

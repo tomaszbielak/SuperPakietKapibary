@@ -1,0 +1,58 @@
+
+\documentclass{article}
+
+\usepackage[a4paper,margin=0.5in,bottom=0.1in,top=0.2in,landscape]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{multicol}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{xcolor}
+
+\usepackage{Sweave}
+\begin{document}
+\thispagestyle{empty}
+\input{wizytowka-concordance}
+\begin{center}
+{\large Wizytówka strategii {\color[HTML]{1D77A8} \textbf{ Strategia Owce (SuperFarmerSuperDziewczyn) }} względem strategii {\color[HTML]{999999} \textbf{ Strategia Druga (SuperFarmerKapibary) }}}\end{center}
+\vspace*{3mm}
+\begin{multicols}{3}
+
+\begin{center}
+{\large Statystyki opisowe:}
+\end{center}
+Minimum liczby ruchów: \hfill {\textbf {\color[HTML]{1D77A8} { \LARGE  9 }}} vs {\textbf {\color[HTML]{999999} { \Large  14 }}}\\\\Kwartyl Q1 liczby ruchów: \hfill {\textbf {\color[HTML]{1D77A8} { \LARGE  30 }}} vs {\textbf {\color[HTML]{999999} { \Large  37 }}}\\\\Średnia liczba ruchów: \hfill {\textbf {\color[HTML]{1D77A8} { \LARGE  52.8 }}} vs {\textbf {\color[HTML]{999999} { \Large  65.3 }}}\\\\Mediana liczby ruchów: \hfill {\textbf {\color[HTML]{1D77A8} { \LARGE  44 }}} vs {\textbf {\color[HTML]{999999} { \Large  53 }}}\\\\Kwartyl Q3 liczby ruchów: \hfill {\textbf {\color[HTML]{1D77A8} { \LARGE  66 }}} vs {\textbf {\color[HTML]{999999} { \Large  81 }}}\\\\Maksimum liczby ruchów: \hfill {\textbf {\color[HTML]{1D77A8} { \LARGE  277 }}} vs {\textbf {\color[HTML]{999999} { \Large  538 }}}\\\\Wariancja liczby ruchów: \hfill {\textbf {\color[HTML]{1D77A8} { \LARGE  1001 }}} vs {\textbf {\color[HTML]{999999} { \Large  1689 }}}\\\\Odchylenie std. liczby ruchów: \hfill {\textbf {\color[HTML]{1D77A8} { \LARGE  31.6 }}} vs {\textbf {\color[HTML]{999999} { \Large  41.1 }}}\\\\
+\begin{center}
+{\large Empiryczna dystrybuanta}\\
+
+\includegraphics[width=0.3\textwidth]{wizytowka-wykresEmpirycznejDystrynuanty}
+\end{center}
+
+\columnbreak
+\begin{center}
+{\large Rozkład prawdopodobieństwa}\\
+
+\includegraphics[width=0.3\textwidth]{wizytowka-wykresRozkladuPrawdopodobienstwa}
+
+\end{center}
+\begin{center}
+{\large Wykres percentyli}\\
+
+\includegraphics[width=0.3\textwidth]{wizytowka-wykresPercentyli}
+
+\end{center}
+\columnbreak
+\begin{center}
+{\large Wykres pudełkowy}\\
+
+\includegraphics[width=0.3\textwidth]{wizytowka-wykresPudelkowy}
+\end{center}
+\begin{center}
+{\large Obserwacje odstające}\\
+
+\includegraphics[width=0.3\textwidth]{wizytowka-wykresUsunieteWynikiEkstremalne}
+\end{center}
+\end{multicols}
+\begin{center}
+Pracę wykonał Tomasz Bielak (332067)
+\end{center}
+\end{document}
